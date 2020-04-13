@@ -31,7 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class FRNN{
+public class ORNN{
     
    public static APImage theImage = new APImage("placeholder.jpg");
    public static int predIsFace;
