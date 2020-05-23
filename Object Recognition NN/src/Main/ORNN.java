@@ -27,17 +27,18 @@ allows up to 128 megabytes of heap space.
 
 import images.APImage;
 import images.Pixel;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class ORNN{
     
    public static APImage theImage = new APImage("placeholder.jpg");
-   public static int predIsFace;
-   public static int outIsFace;
+   public static int predCategory;
+   public static int outCategory;
+   public static int error;
+   public static final int NN_SIZE = 65536;
    //Assuming 4 hidden layers with 256 nodes each, 2 outputs, 
-   public static double [][] weights = new double [65536][65536];
+   public static double [][] weights = new double [NN_SIZE][NN_SIZE];
    
    public static void main(String[]args){
         Scanner reader = new Scanner(System.in);
@@ -50,9 +51,9 @@ public class ORNN{
            File weightsFile = new File("weights.txt");
            Scanner myReader = new Scanner(weightsFile);
            while (myReader.hasNextLine()) {
-               for (int x = 0; x < 65536; x++) {
-                for (int y = 0; y < 65536; y++) {
-                    double data = (double) myReader.nextLine();
+               for (int x = 0; x < NN_SIZE; x++) {
+                for (int y = 0; y < NN_SIZE; y++) {
+                    double data = (double) Double.parseDouble(myReader.nextLine());
                     weights[x][y] = data;
                 }
                }
@@ -69,9 +70,9 @@ public class ORNN{
            File weightsFile = new File("weights.txt");
            Scanner myReader = new Scanner(weightsFile);
            while (myReader.hasNextLine()) {
-               for (int x = 0; x < 65536; x++) {
-                for (int y = 0; y < 65536; y++) {
-                    double data = (double) myReader.nextLine();
+               for (int x = 0; x < NN_SIZE; x++) {
+                for (int y = 0; y < NN_SIZE; y++) {
+                    double data = (double) Double.parseDouble(myReader.nextLine());
                     weights[x][y] = data;
                 }
                }
@@ -88,9 +89,9 @@ public class ORNN{
            File weightsFile = new File("weights.txt");
            Scanner myReader = new Scanner(weightsFile);
            while (myReader.hasNextLine()) {
-               for (int x = 0; x < 65536; x++) {
-                for (int y = 0; y < 65536; y++) {
-                    double data = (double) myReader.nextLine();
+               for (int x = 0; x < NN_SIZE; x++) {
+                for (int y = 0; y < NN_SIZE; y++) {
+                    double data = (double) Double.parseDouble(myReader.nextLine());
                     weights[x][y] = data;
                 }
                }
@@ -103,18 +104,51 @@ public class ORNN{
    }
    
    public static void getImage () {
-       String fileName;
-        if (Math.random()<0.5){
-           predIsFace = 0;
-           //Choose random image from non-face folder and set placeholder to image name.
-           fileName = "placeholder.jpg";
-        }else{
-           predIsFace = 1;
-           //Choose random image from face folder and set placeholder to image name.
-           fileName = "placeholder.jpg";
-        }
+        int categoryNum;
+        int num0s = 3;
+        String category = "";
+        File categoryFolder;
+        
+        String [] filesInCategory = new String [0];
+        
+        ArrayList<String> files = new ArrayList<String> ();
+        int fileIndex = 0;
+        String fileName = "";
+        String pathway = "";
        
-       theImage = new APImage(fileName);
+       //get a random category
+       categoryNum = (int)(Math.random()*257 + 1);
+       
+       //find the number of preceding 0s in the folder name
+       int temp = categoryNum;
+       while (temp != 0) {
+           num0s--;
+           temp %= 10;
+       }
+       
+       //add that # 0s to the category name
+       for (int i = 0; i < num0s; i++) {
+           category += "0";
+       }
+       
+       //finish composing the category name
+       category += categoryNum + ".*";
+       
+       //create a list of potential files
+       categoryFolder = new File("ObjectCategories" + "\\" + category);
+       filesInCategory = categoryFolder.list();
+       
+       //select a random file
+       fileIndex = (int) (Math.random()*filesInCategory.length);
+       fileName = filesInCategory[fileIndex];
+       
+       theImage = new APImage("ObjectCategories" + "\\" + category + "\\" + fileName);
+   }
+   
+   public static APImage scaleImage () {
+       APImage scaledImg = new APImage("placeholder.jpg");
+       //scale the image to output a training file of the correct size
+       return scaledImg;
    }
    
    public static void readImage(){
@@ -140,18 +174,19 @@ public class ORNN{
             
             }
       }
-      isFace(r, g, b);
+      getCategory(r, g, b);
    }
    
-   public static void isFace(int [][] r, int [][] g, int [][] b) {
+   public static void getCategory(int [][] r, int [][] g, int [][] b) {
        //Access NN weight values in text document
        //Write NN code here with each pixel's rgb values in their respective array
        //Replace 1 with output.
-       outIsFace = 1;
+       outCategory = 0;
    }
    
    public static void backpropagate(int [][] weights){
-       double cost = 2*(predIsFace-outIsFace);
+       
+       double cost = 2*(predCategory - outCategory);
        
        //The for loop is to get the indexes of each weight
        //                                                   IMPORTANT: Figure out how to get x and y lengths of weights
@@ -178,7 +213,7 @@ public class ORNN{
    public static void useNN() {
        theImage = new APImage("placeholder.jpg");
        readImage();
-       if (outIsFace < 0.5)
+       if (outCategory < 0.5)
            System.out.println("The given image does not have a face in it");
        else
            System.out.println("The given image does not have a face in it");
