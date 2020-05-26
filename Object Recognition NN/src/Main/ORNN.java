@@ -33,6 +33,8 @@ import java.util.*;
 public class ORNN{
     
    public static APImage theImage = new APImage("placeholder.jpg");
+   public static File weightsFolder = new File("Weights\\");
+   public static String [] weightList = weightsFolder.list();
    public static int predCategory;
    public static int outCategory;
    public static int error;
@@ -60,47 +62,50 @@ public class ORNN{
            }
            myReader.close();
        } catch (FileNotFoundException e) {
-           System.out.println("An error occurred.");
+           System.out.println("Couldn't find the file");
            e.printStackTrace();
        }
    }
    
-   public static void setWeights () {
-       try {
-           File weightsFile = new File("weights.txt");
-           Scanner myReader = new Scanner(weightsFile);
-           while (myReader.hasNextLine()) {
-               for (int x = 0; x < NN_SIZE; x++) {
-                for (int y = 0; y < NN_SIZE; y++) {
-                    double data = (double) Double.parseDouble(myReader.nextLine());
-                    weights[x][y] = data;
-                }
-               }
-           }
-           myReader.close();
-       } catch (FileNotFoundException e) {
-           System.out.println("An error occurred.");
-           e.printStackTrace();
-       }
-   }
+//   public static void setWeights () {
+//       try {
+//           File weightsFile = new File("weights.txt");
+//           Scanner myReader = new Scanner(weightsFile);
+//           while (myReader.hasNextLine()) {
+//               for (int x = 0; x < NN_SIZE; x++) {
+//                for (int y = 0; y < NN_SIZE; y++) {
+//                    double data = (double) Double.parseDouble(myReader.nextLine());
+//                    weights[x][y] = data;
+//                }
+//               }
+//           }
+//           myReader.close();
+//       } catch (FileNotFoundException e) {
+//           System.out.println("An error occurred.");
+//           e.printStackTrace();
+//       }
+//   }
    
       public static void newWeights () {
-       try {
-           File weightsFile = new File("weights.txt");
-           Scanner myReader = new Scanner(weightsFile);
-           while (myReader.hasNextLine()) {
-               for (int x = 0; x < NN_SIZE; x++) {
-                for (int y = 0; y < NN_SIZE; y++) {
-                    double data = (double) Double.parseDouble(myReader.nextLine());
-                    weights[x][y] = data;
-                }
-               }
-           }
-           myReader.close();
-       } catch (FileNotFoundException e) {
-           System.out.println("An error occurred.");
-           e.printStackTrace();
-       }
+          String fileName = "weights_" + weightList.length + ".txt";
+          File weightsFile = new File(fileName);
+          
+          //write the weights to a new file by name fileName
+//          try {
+//           Scanner myReader = new Scanner(weightsFile);
+//           while (myReader.hasNextLine()) {
+//               for (int x = 0; x < NN_SIZE; x++) {
+//                for (int y = 0; y < NN_SIZE; y++) {
+//                    double data = (double) Double.parseDouble(myReader.nextLine());
+//                    weights[x][y] = data;
+//                }
+//               }
+//           }
+//           myReader.close();
+//       } catch (FileNotFoundException e) {
+//           System.out.println("An error occurred.");
+//           e.printStackTrace();
+//       }
    }
    
    public static void getImage () {
@@ -142,15 +147,10 @@ public class ORNN{
        fileIndex = (int) (Math.random()*filesInCategory.length);
        fileName = filesInCategory[fileIndex];
        
+       predCategory = categoryNum;
        theImage = new APImage("ObjectCategories" + "\\" + category + "\\" + fileName);
    }
-   
-   public static APImage scaleImage () {
-       APImage scaledImg = new APImage("placeholder.jpg");
-       //scale the image to output a training file of the correct size
-       return scaledImg;
-   }
-   
+     
    public static void readImage(){
       Scanner reader = new Scanner(System.in);
       
@@ -179,6 +179,7 @@ public class ORNN{
    
    public static void getCategory(int [][] r, int [][] g, int [][] b) {
        //Access NN weight values in text document
+       getWeights();
        //Write NN code here with each pixel's rgb values in their respective array
        //Replace 1 with output.
        outCategory = 0;

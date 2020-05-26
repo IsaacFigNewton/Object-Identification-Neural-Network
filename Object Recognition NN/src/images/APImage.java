@@ -301,6 +301,12 @@ public class APImage extends JFrame implements Iterable<Pixel>{
         }
         return image;
     }
+    
+    public static APImage scaleImage () {
+       APImage scaledImg = new APImage("placeholder.jpg");
+       //scale the image to output a training file of the correct size                                                         scale image
+       return scaledImg;
+   }
    
     private File openFileDialog(){
         JFileChooser chooser = new JFileChooser();
