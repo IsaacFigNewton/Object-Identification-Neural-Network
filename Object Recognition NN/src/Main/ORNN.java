@@ -29,18 +29,25 @@ import images.APImage;
 import images.Pixel;
 import java.io.*;
 import java.util.*;
+//import Main.ImagePrep;
 
 public class ORNN{
     
-   public static APImage theImage = new APImage("placeholder.jpg");
+   public static APImage theImage = new APImage("placeholder.png");
    public static File weightsFolder = new File("Weights\\");
    public static String [] weightList = weightsFolder.list();
    public static int predCategory;
    public static int outCategory;
    public static int error;
-   public static final int NN_SIZE = 65536;
-   //Assuming 4 hidden layers with 256 nodes each, 2 outputs, 
-   public static double [][] weights = new double [NN_SIZE][NN_SIZE];
+   public static final int NN_INPUT_SIZE = 512;
+   //calculate weights for CNN kernel layer
+   public static double [][] kernelWeights = new double [NN_INPUT_SIZE][NN_INPUT_SIZE];
+   //calculate CNN kernel layer size
+   public static final int KERNEL_LAYER_SIZE = (NN_INPUT_SIZE / 3);
+   //continue with next layers once more learned in the area
+   
+   //set up monochrome array for image pixels
+   public static int [][] m = new int [NN_INPUT_SIZE][NN_INPUT_SIZE];
    
    public static void main(String[]args){
         Scanner reader = new Scanner(System.in);
@@ -53,10 +60,10 @@ public class ORNN{
            File weightsFile = new File("weights.txt");
            Scanner myReader = new Scanner(weightsFile);
            while (myReader.hasNextLine()) {
-               for (int x = 0; x < NN_SIZE; x++) {
-                for (int y = 0; y < NN_SIZE; y++) {
+               for (int y = 0; y < NN_INPUT_SIZE; y++) {
+                for (int x = 0; x < NN_INPUT_SIZE; x++) {
                     double data = (double) Double.parseDouble(myReader.nextLine());
-                    weights[x][y] = data;
+                    kernelWeights[x][y] = data;
                 }
                }
            }
@@ -67,24 +74,24 @@ public class ORNN{
        }
    }
    
-//   public static void setWeights () {
-//       try {
-//           File weightsFile = new File("weights.txt");
-//           Scanner myReader = new Scanner(weightsFile);
-//           while (myReader.hasNextLine()) {
-//               for (int x = 0; x < NN_SIZE; x++) {
-//                for (int y = 0; y < NN_SIZE; y++) {
-//                    double data = (double) Double.parseDouble(myReader.nextLine());
-//                    weights[x][y] = data;
-//                }
-//               }
-//           }
-//           myReader.close();
-//       } catch (FileNotFoundException e) {
-//           System.out.println("An error occurred.");
-//           e.printStackTrace();
-//       }
-//   }
+   public static void setWeights () {
+       try {
+           File weightsFile = new File("weights.txt");
+           Scanner myReader = new Scanner(weightsFile);
+           while (myReader.hasNextLine()) {
+               for (int y = 0; y < NN_INPUT_SIZE; y++) {
+                for (int x = 0; x < NN_INPUT_SIZE; x++) {
+                    double data = (double) Double.parseDouble(myReader.nextLine());
+                    kernelWeights[x][y] = data;
+                }
+               }
+           }
+           myReader.close();
+       } catch (FileNotFoundException e) {
+           System.out.println("An error occurred.");
+           e.printStackTrace();
+       }
+   }
    
       public static void newWeights () {
           String fileName = "weights_" + weightList.length + ".txt";
@@ -147,8 +154,18 @@ public class ORNN{
        fileIndex = (int) (Math.random()*filesInCategory.length);
        fileName = filesInCategory[fileIndex];
        
+       String filePath = "ObjectCategories" + "\\" + category + "\\" + fileName;
        predCategory = categoryNum;
-       theImage = new APImage("ObjectCategories" + "\\" + category + "\\" + fileName);
+//       theImage = new APImage(new String("ObjectCategories" + "\\" + category + "\\" + fileName));
+       
+       //debug
+       System.out.println(theImage.toString());
+//       theImage.draw();
+       
+       ImagePrep img = new ImagePrep(filePath);
+       
+       //prepare the image for reading and set theImage to it
+       theImage = img.prepImage(filePath);
    }
      
    public static void readImage(){
@@ -157,27 +174,26 @@ public class ORNN{
       //initialize values
       int width = theImage.getWidth();
       int height = theImage.getHeight();
-      int [][] r = new int [height][width];
-      int [][] g = new int [height][width];
-      int [][] b = new int [height][width];
+      
+      //initialize greyscale/monochrome value array
+      m = new int [height][width];
+
 
       // Visit all pixels except for the left column and 
       // bottom row
-      for (int x = 0; x < width; x++) {
-         for (int y = 1; y < height; y++){
+      for (int y = 1; y < height; y++) {
+         for (int x = 0; x < width; x++){
             // Obtain info for a pixel and add it to pixel color arrays
             // at a position corresponding to the y and x values respectively
             Pixel pixel = theImage.getPixel(x, y);
-            r[x][y] = pixel.getRed();
-            g[x][y] = pixel.getGreen();
-            b[x][y] = pixel.getBlue();
+            m[x][y] = pixel.getGreen();
             
             }
       }
-      getCategory(r, g, b);
+      getCategory(m);
    }
    
-   public static void getCategory(int [][] r, int [][] g, int [][] b) {
+   public static void getCategory(int [][] monochrome) {
        //Access NN weight values in text document
        getWeights();
        //Write NN code here with each pixel's rgb values in their respective array
@@ -191,8 +207,8 @@ public class ORNN{
        
        //The for loop is to get the indexes of each weight
        //                                                   IMPORTANT: Figure out how to get x and y lengths of weights
-       for(int x = 0; x < weights.length; x++){
-        for(int y = 0; y < weights.length; y++){
+       for (int y = 0; y < weights.length; y++){
+        for (int x = 0; x < weights.length; x++){
         //backpropagate using backpropagateWeight
         }
        }
@@ -204,11 +220,11 @@ public class ORNN{
    
    public static void trainNN() {
        getImage();
-       int width = theImage.getWidth();
-       int height = theImage.getHeight();
-       int [][] weights = new int [width][height];
-       readImage();
-       backpropagate(weights);
+//       int width = theImage.getWidth();
+//       int height = theImage.getHeight();
+//       int [][] weights = new int [width][height];
+//       readImage();
+//       backpropagate(weights);
    }
    
    public static void useNN() {
