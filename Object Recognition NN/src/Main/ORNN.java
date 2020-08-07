@@ -49,9 +49,10 @@ public class ORNN{
    //set up monochrome array for image pixels
    public static int [][] m = new int [NN_INPUT_SIZE][NN_INPUT_SIZE];
    
+   //                                                                           Main Class \/
    public static void main(String[]args){
         Scanner reader = new Scanner(System.in);
-        
+//        getImage();
         trainNN();
    }
 
