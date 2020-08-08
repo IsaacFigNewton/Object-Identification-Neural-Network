@@ -12,31 +12,79 @@ package Main;
 
 import images.APImage;
 import images.Pixel;
-import Main.ImageResizer;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class ImagePrep {
     private static APImage img = new APImage("placeholder.png");
     
+    //constructors
     ImagePrep () {
         img = new APImage("placeholder.png");
     }
     ImagePrep (String path) {
         img = new APImage(path);
     }
-    public static APImage prepImage (String path) {
-        
-        ImageResizer rImg = new ImageResizer();
-        //scale image
-        rImg.resizeImage(path);
-        
-        //convert to black and white
-        for (Pixel p : img) {
-            int avg = (p.getRed() + p.getGreen() + p.getBlue())/3;
-            p.setRed(avg);
-            p.setGreen(avg);
-            p.setBlue(avg);
+    
+    public static APImage prepImage (String path) throws IOException {
+        try {
+            //debug
+            System.out.println("5");
+            
+            //scale image
+            resizeImage(path, 512);
+
+            //convert to black and white
+            for (Pixel p : img) {
+                int avg = (p.getRed() + p.getGreen() + p.getBlue())/3;
+                p.setRed(avg);
+                p.setGreen(avg);
+                p.setBlue(avg);
+            }
+            
+            //debug
+            System.out.println("7");
+            
+            return img;
+        } catch (IOException ex) {
+            System.out.println("Error resizing the image.");
+            ex.printStackTrace();
+            return img;
         }
-        
-        return img;
+    }
+    
+    //image resizing method
+    public static void resizeImage(String imagePath, int size) throws IOException {
+        try {
+            //debug
+            System.out.println("6");
+            
+            // reads input image
+            File inputFile = new File(imagePath);
+            BufferedImage inputImage = ImageIO.read(inputFile);
+
+            // creates output image
+            BufferedImage outputImage = new BufferedImage(size,
+                    size, inputImage.getType());
+
+            // scales the input image to the output image
+            Graphics2D g2d = outputImage.createGraphics();
+            g2d.drawImage(inputImage, 0, 0, size, size, null);
+            g2d.dispose();
+
+            // extracts extension of output file
+            String formatName = imagePath.substring(imagePath
+                    .lastIndexOf(".") + 1);
+
+            // writes to output file
+            ImageIO.write(outputImage, formatName, new File(imagePath));
+
+        } catch (IOException ex) {
+            System.out.println("Error resizing the image.");
+            ex.printStackTrace();
+        }
     }
 }

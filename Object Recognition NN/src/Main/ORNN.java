@@ -50,9 +50,12 @@ public class ORNN{
    public static int [][] m = new int [NN_INPUT_SIZE][NN_INPUT_SIZE];
    
    //                                                                           Main Class \/
-   public static void main(String[]args){
+   public static void main(String[]args) throws IOException{
         Scanner reader = new Scanner(System.in);
-//        getImage();
+        
+        //debug
+        System.out.println("1");
+        
         trainNN();
    }
 
@@ -116,57 +119,85 @@ public class ORNN{
 //       }
    }
    
-   public static void getImage () {
-        int categoryNum;
-        int num0s = 3;
-        String category = "";
-        File categoryFolder;
-        
-        String [] filesInCategory = new String [0];
-        
-        ArrayList<String> files = new ArrayList<String> ();
-        int fileIndex = 0;
-        String fileName = "";
-        String pathway = "";
-       
-       //get a random category
-       categoryNum = (int)(Math.random()*257 + 1);
-       
-       //find the number of preceding 0s in the folder name
-       int temp = categoryNum;
-       while (temp != 0) {
-           num0s--;
-           temp %= 10;
-       }
-       
-       //add that # 0s to the category name
-       for (int i = 0; i < num0s; i++) {
-           category += "0";
-       }
-       
-       //finish composing the category name
-       category += categoryNum + ".*";
-       
-       //create a list of potential files
-       categoryFolder = new File("ObjectCategories" + "\\" + category);
-       filesInCategory = categoryFolder.list();
-       
-       //select a random file
-       fileIndex = (int) (Math.random()*filesInCategory.length);
-       fileName = filesInCategory[fileIndex];
-       
-       String filePath = "ObjectCategories" + "\\" + category + "\\" + fileName;
-       predCategory = categoryNum;
-//       theImage = new APImage(new String("ObjectCategories" + "\\" + category + "\\" + fileName));
-       
-       //debug
-       System.out.println(theImage.toString());
-//       theImage.draw();
-       
-       ImagePrep img = new ImagePrep(filePath);
-       
-       //prepare the image for reading and set theImage to it
-       theImage = img.prepImage(filePath);
+   public static void getImage () throws IOException {
+        try {
+            //debug
+            System.out.println("3");
+            
+            //instantiate variables
+            int categoryNum;
+            int num0s = 3;
+            String category = "";
+            File categoryFolder;
+
+            String [] filesInCategory = new String [0];
+
+            ArrayList<String> files = new ArrayList<String> ();
+            int fileIndex = 0;
+            String fileName = "";
+            String pathway = "";
+
+           //debug
+           System.out.println("3.1");
+            
+           //get a random category
+           categoryNum = (int)(Math.random()*257 + 1);
+
+           //find the number of preceding 0s in the folder name
+           int temp = categoryNum;
+           while (temp != 0) {
+               num0s--;
+               temp /= 10;
+           }
+           
+           //debug
+           System.out.println("3.2");
+
+           //add that # 0s to the category name
+           for (int i = 0; i < num0s; i++) {
+               category += "0";
+           }
+
+           //finish composing the category name
+           category += categoryNum + ".*";
+           
+           //debug
+           System.out.println("3.3");
+
+           //create a list of potential files
+           categoryFolder = new File("ObjectCategories" + "\\" + category);
+           filesInCategory = categoryFolder.list();
+           
+           //debug
+           System.out.println("3.4");
+
+           //select a random file
+           fileIndex = (int) (Math.random()*filesInCategory.length);
+           fileName = filesInCategory[fileIndex];
+           
+           //debug
+           System.out.println("3.5");
+
+           String filePath = "ObjectCategories" + "\\" + category + "\\" + fileName;
+           predCategory = categoryNum;
+    //       theImage = new APImage(new String("ObjectCategories" + "\\" + category + "\\" + fileName));
+
+           //debug
+           System.out.println("4");
+           
+    //       theImage.draw();
+
+           ImagePrep img = new ImagePrep(filePath);
+
+           //debug
+            System.out.println("8");
+           
+           //prepare the image for reading and set theImage to it
+           theImage = img.prepImage(filePath);
+        } catch (IOException ex) {
+            System.out.println("Something went wrong while getting and processing the training image.");
+            ex.printStackTrace();
+        }
    }
      
    public static void readImage(){
@@ -219,7 +250,10 @@ public class ORNN{
        //backpropagate for 1 weight with respect to each weight in a refactored way.
    }
    
-   public static void trainNN() {
+   public static void trainNN () throws IOException{
+       //debug
+       System.out.println("2");
+       
        getImage();
 //       int width = theImage.getWidth();
 //       int height = theImage.getHeight();
