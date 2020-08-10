@@ -15,9 +15,15 @@ import java.io.*;
 import java.util.*;
 
 public class Weights {
+    /*
+           0           1  
+    Input ---> Kernel --->
+    */
+    public int layer;
+    
     public double [] [] weights;
-    private String name;
-    private int size = 256;
+    public String name = "Weights";
+    public int size = 256;
     private final int MAX_SIZE = 256;
     
     public static File weightsFolder = new File("Weights\\");
@@ -25,17 +31,20 @@ public class Weights {
     
     
     //constructors
-    public Weights () {
-        name = "Weights";
+    public Weights (int l) {
+        layer = l;
         
         weights = new double [size][size];
     }
-    public Weights (String n) {
-        weights = new double [size][size];
+    public Weights (int l, String n) {
+        layer = l;
+        
         name = n;
+        
+        weights = new double [size][size];
     }
-    public Weights (int s) {
-        name = "Weights";
+    public Weights (int l, int s) {
+        layer = l;
         
         if (s <= MAX_SIZE)
         size = s;
@@ -44,7 +53,9 @@ public class Weights {
         
         weights = new double [size][size];
     }
-    public Weights (String n, int s) {
+    public Weights (int l, String n, int s) {
+        layer = l;
+        
         name = n;
         
         if (s <= MAX_SIZE)
@@ -54,8 +65,8 @@ public class Weights {
         
         weights = new double [size][size];
     }
-    public Weights (double [] [] w) {
-        name = "Weights";
+    public Weights (int l, double [] [] w) {
+        layer = l;
         
         size = w.length;
         
@@ -66,7 +77,9 @@ public class Weights {
             }
         }
     }
-    public Weights (String n, double [] [] w) {
+    public Weights (int l, String n, double [] [] w) {
+        layer = l;
+        
         name = n;
         
         size = w.length;
@@ -110,7 +123,6 @@ public class Weights {
            e.printStackTrace();
        }
    }
-   
    public void setWeightsText () throws FileNotFoundException{
        try {
            File weightsFile = new File("weights.txt");
@@ -128,5 +140,10 @@ public class Weights {
            System.out.println("An error occurred.");
            e.printStackTrace();
        }
+   }
+   
+   //toString
+   public String toString() {
+       return name;
    }
 }

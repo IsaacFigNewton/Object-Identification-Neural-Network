@@ -150,24 +150,29 @@ public class ORNN{
             m[x][y] = pixel.getGreen();
         }
       }
-      NN(m);
    }
    
-   public static void NN(int [][] monochrome) {
+   public static void NN() {
        //Access NN weight values
        //Write NN code here with each pixel's rgb values in their respective array
        //Replace 1 with output.
        outCategory = 0;
    }
    
-   public static void backpropagate(int [][] weights){
+   public static void backpropagateAll(){
+       //backpropagate all layers of weights with respect to their layer
+   }
+   
+   
+   public static void backpropagate(Weights w){
+       
        
        double cost = 2*(predCategory - outCategory);
        
        //The for loop is to get the indexes of each weight
        //                                                   IMPORTANT: Figure out how to get x and y lengths of weights
-       for (int y = 0; y < weights.length; y++){
-        for (int x = 0; x < weights.length; x++){
+       for (int y = 0; y < w.size; y++){
+        for (int x = 0; x < w.size; x++){
         //backpropagate using backpropagateWeight
         }
        }
@@ -183,6 +188,9 @@ public class ORNN{
        
        for (int i = 0; i < timesTrained; i++) {
        getImage();
+       readImage();
+       NN();
+       backpropagateAll();
 //       int width = theImage.getWidth();
 //       int height = theImage.getHeight();
 //       int [][] weights = new int [width][height];
