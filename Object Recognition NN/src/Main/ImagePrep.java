@@ -24,11 +24,11 @@ public class ImagePrep {
         try {
             APImage img = new APImage(path);
             
-            //debug
-            System.out.println("5");
+//            //debug
+//            System.out.println("5");
             
             //scale image
-            resizeImage(path, 512);
+            resizeImage(path, 256);
 
             //update image
             img = new APImage(path);
@@ -41,8 +41,8 @@ public class ImagePrep {
                 p.setBlue(avg);
             }
             
-            //debug
-            System.out.println("7");
+//            //debug
+//            System.out.println("7");
             
             return img;
         } catch (IOException ex) {
@@ -55,8 +55,8 @@ public class ImagePrep {
     //image resizing method
     public static void resizeImage(String imagePath, int size) throws IOException {
         try {
-            //debug
-            System.out.println("6");
+//            //debug
+//            System.out.println("6");
             
             // reads input image
             File inputFile = new File(imagePath);
