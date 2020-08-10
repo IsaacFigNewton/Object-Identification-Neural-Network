@@ -19,24 +19,20 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class ImagePrep {
-    private static APImage img = new APImage("placeholder.png");
-    
-    //constructors
-    ImagePrep () {
-        img = new APImage("placeholder.png");
-    }
-    ImagePrep (String path) {
-        img = new APImage(path);
-    }
     
     public static APImage prepImage (String path) throws IOException {
         try {
+            APImage img = new APImage(path);
+            
             //debug
             System.out.println("5");
             
             //scale image
             resizeImage(path, 512);
 
+            //update image
+            img = new APImage(path);
+            
             //convert to black and white
             for (Pixel p : img) {
                 int avg = (p.getRed() + p.getGreen() + p.getBlue())/3;
@@ -52,7 +48,7 @@ public class ImagePrep {
         } catch (IOException ex) {
             System.out.println("Error resizing the image.");
             ex.printStackTrace();
-            return img;
+            return new APImage("placeholder.jpg");
         }
     }
     

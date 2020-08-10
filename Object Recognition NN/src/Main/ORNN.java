@@ -34,11 +34,14 @@ import java.util.*;
 public class ORNN{
     
    public static APImage theImage = new APImage("placeholder.png");
+   
    public static File weightsFolder = new File("Weights\\");
    public static String [] weightList = weightsFolder.list();
+   
    public static int predCategory;
    public static int outCategory;
    public static int error;
+   
    public static final int NN_INPUT_SIZE = 512;
    //calculate weights for CNN kernel layer
    public static double [][] kernelWeights = new double [NN_INPUT_SIZE][NN_INPUT_SIZE];
@@ -125,12 +128,13 @@ public class ORNN{
             System.out.println("3");
             
             //instantiate variables
-            int categoryNum;
-            int num0s = 3;
-            String category = "";
+            int categoryIndex;
+            String category;
             File categoryFolder;
+            File fileFolder;
 
-            String [] filesInCategory = new String [0];
+            String [] categoriesInFolder;
+            String [] filesInCategory;
 
             ArrayList<String> files = new ArrayList<String> ();
             int fileIndex = 0;
@@ -141,35 +145,31 @@ public class ORNN{
            System.out.println("3.1");
             
            //get a random category
-           categoryNum = (int)(Math.random()*257 + 1);
-
-           //find the number of preceding 0s in the folder name
-           int temp = categoryNum;
-           while (temp != 0) {
-               num0s--;
-               temp /= 10;
-           }
+           categoryIndex = (int)(Math.random()*257);
            
            //debug
            System.out.println("3.2");
-
-           //add that # 0s to the category name
-           for (int i = 0; i < num0s; i++) {
-               category += "0";
-           }
-
-           //finish composing the category name
-           category += categoryNum + ".*";
+           
+           //create a list of potential categories
+           categoryFolder = new File("ObjectCategories");
+           categoriesInFolder = categoryFolder.list();
+           //choose category
+           category = categoriesInFolder[categoryIndex];
            
            //debug
            System.out.println("3.3");
-
+           System.out.println(category);
+           if (categoryFolder.isDirectory())
+           System.out.println(categoriesInFolder);
+           
            //create a list of potential files
-           categoryFolder = new File("ObjectCategories" + "\\" + category);
-           filesInCategory = categoryFolder.list();
+           fileFolder = new File("ObjectCategories\\" + category);
+           filesInCategory = fileFolder.list();
            
            //debug
            System.out.println("3.4");
+           if (fileFolder.isDirectory())
+           System.out.println(filesInCategory);
 
            //select a random file
            fileIndex = (int) (Math.random()*filesInCategory.length);
@@ -179,21 +179,21 @@ public class ORNN{
            System.out.println("3.5");
 
            String filePath = "ObjectCategories" + "\\" + category + "\\" + fileName;
-           predCategory = categoryNum;
+           predCategory = categoryIndex;
     //       theImage = new APImage(new String("ObjectCategories" + "\\" + category + "\\" + fileName));
 
            //debug
            System.out.println("4");
-           
-    //       theImage.draw();
-
-           ImagePrep img = new ImagePrep(filePath);
-
-           //debug
-            System.out.println("8");
+           if (categoryFolder.isDirectory())
+           System.out.println(filesInCategory);
            
            //prepare the image for reading and set theImage to it
-           theImage = img.prepImage(filePath);
+           theImage = ImagePrep.prepImage(filePath);
+           
+           //debug
+           System.out.println("8");
+           theImage.draw();
+           
         } catch (IOException ex) {
             System.out.println("Something went wrong while getting and processing the training image.");
             ex.printStackTrace();
