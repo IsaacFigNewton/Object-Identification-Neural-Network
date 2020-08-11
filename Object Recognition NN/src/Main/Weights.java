@@ -15,19 +15,22 @@ import java.io.*;
 import java.util.*;
 
 public class Weights {
+    private static final int MAX_WEIGHT_LAYERS = 5;
+    private static final int MAX_SIZE = 256;
+//    private static double [] [] [] allWeights = new double [MAX_WEIGHT_LAYERS][MAX_SIZE][MAX_SIZE];
+    
     /*
-           0           1  
-    Input ---> Kernel --->
+            0          1             2            3                    4
+    Input ---> Kernel ---> Max Pool ---> Flatten ---> Fully Connected ---> Soft-Max Output
     */
     public int layer;
     
     public double [] [] weights;
     public String name = "Weights";
     public int size = 256;
-    private final int MAX_SIZE = 256;
     
     public static File weightsFolder = new File("Weights\\");
-    public static String [] weightList = weightsFolder.list();
+    public static String [] weightsFolderList = weightsFolder.list();
     
     
     //constructors
@@ -90,8 +93,23 @@ public class Weights {
                 weights[x][y] = w[x][y];
             }
         }
+    }
+    //copy constructor
+    public Weights (Weights w) {
+        layer = w.layer;
         
+        name = w.name;
         
+        size = w.size;
+        
+        //read all w's values into m
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                weights[x][y] = w.getWeight(x, y);
+            }
+        }
+        
+        weights = new double [size][size];
     }
     
     //getters
@@ -105,15 +123,23 @@ public class Weights {
     }
     
     //recorders
-    public void getWeightsText ()  throws FileNotFoundException{
+//    //idunno why I wrote this, but maybe it'll be useful later
+//    public void setAllWeights () {
+//        for (int y = 0; y < size; y++) {
+//            for (int x = 0; x < size; x++) {
+//                allWeights[layer][x][y] = weights[x][y];
+//            }
+//        }
+//    }
+    public void getWeightsText (String path)  throws FileNotFoundException{
        try {
-           File weightsFile = new File("weights.txt");
+           File weightsFile = new File(path);
            Scanner myReader = new Scanner(weightsFile);
            while (myReader.hasNextLine()) {
                for (int y = 0; y < size; y++) {
                 for (int x = 0; x < size; x++) {
                     double data = (double) Double.parseDouble(myReader.nextLine());
-                    this.weights[x][y] = data;
+                    weights[x][y] = data;
                 }
                }
            }
@@ -123,15 +149,15 @@ public class Weights {
            e.printStackTrace();
        }
    }
-   public void setWeightsText () throws FileNotFoundException{
+   public void setWeightsText (String path) throws FileNotFoundException{
        try {
-           File weightsFile = new File("weights.txt");
+           File weightsFile = new File(path);
            Scanner myReader = new Scanner(weightsFile);
            while (myReader.hasNextLine()) {
                for (int y = 0; y < size; y++) {
                 for (int x = 0; x < size; x++) {
                     double data = (double) Double.parseDouble(myReader.nextLine());
-                    this.weights[x][y] = data;
+                    data = weights[x][y];
                 }
                }
            }

@@ -40,14 +40,33 @@ public class ORNN{
    public static int error;
    
    public static final int NN_INPUT_SIZE = 256;
-   //calculate weights for CNN kernel layer
-   public static Weights kernelWeights = new Weights (NN_INPUT_SIZE * (NN_INPUT_SIZE / 3));
+   
    //calculate CNN kernel layer size
-   public static final int KERNEL_LAYER_SIZE = (NN_INPUT_SIZE / 3);
+   public static final int KERNEL_LAYER_SIZE = (NN_INPUT_SIZE - 2);
+   public static final int MAXPOOL_LAYER_SIZE = (KERNEL_LAYER_SIZE/4);
+   
+   
    //continue with next layers once more learned in the area
    
    //set up monochrome array for image pixels
    public static int [][] m = new int [NN_INPUT_SIZE][NN_INPUT_SIZE];
+   
+   //Initialize layers
+   //Kernel Layer
+   public static Weights k = new Weights (0, 3);
+   public static Layer kernel;
+   //Max Pool Layer
+   public static Weights pool = new Weights (0, KERNEL_LAYER_SIZE);
+   public static Layer maxPool;
+   //Flattening Layer
+   public static Weights flat;
+   public static Layer flatten;
+   //Fully Connected Layer
+   public static Weights connect;
+   public static Layer fullConnect;
+   //Soft Max/Output Layer
+   public static Weights soft;
+   public static Layer softMax;
    
    //                                                                           Main Class \/
    public static void main(String[]args) throws IOException{
@@ -153,6 +172,10 @@ public class ORNN{
    }
    
    public static void NN() {
+       //feed 2D pixel array into kernel
+       kernel = new Layer(0, KERNEL_LAYER_SIZE, m, k);
+       //feed kernel output into Max Pool
+       maxPool = new Layer(1, MAXPOOL_LAYER_SIZE, kernel.getL0Out(), pool);
        //Access NN weight values
        //Write NN code here with each pixel's rgb values in their respective array
        //Replace 1 with output.
