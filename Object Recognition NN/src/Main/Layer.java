@@ -32,8 +32,6 @@ public class Layer {
         size = s;
         else
         size = MAX_SIZE;
-        
-        layerIn = new double [size][size];
     }
     public Layer (int l, int s, int [] [] in, Weights w) {
         layer = l;
@@ -42,7 +40,8 @@ public class Layer {
         
         size = s;
         
-        weights = new Weights(l, s);
+        //initialize size of layerIn array
+        layerIn = new double [in.length][in.length];
         
         //read all w's values into m
         for (int y = 0; y < in.length; y++) {
@@ -57,6 +56,9 @@ public class Layer {
         weights = new Weights(w);
         
         size = in.length;
+        
+        //initialize size of layerIn array
+        layerIn = new double [in.length][in.length];
         
         //read all w's values into m
         for (int y = 0; y < in.length; y++) {
@@ -89,22 +91,24 @@ public class Layer {
         double [] [] layerOut = new double [size-2][size-2];
         
         //fill up output in case of misuse
-        for (int y = 1; y < size-1; y++) {
-                for (int x = 1; x < size-1; x++) {
-                layerOut [x][y] = layerIn [x][y];
+        for (int y = 1; y < size-2; y++) {
+                for (int x = 1; x < size-2; x++) {
+                layerOut [x][y] = 0;
             }
         }
         
         if (layer == 0) {
             //do required stuffs to input to get output
-            for (int y = 1; y < size-1; y++) {
-                for (int x = 1; x < size-1; x++) {
+            for (int y = 1; y < size-2; y++) {
+                for (int x = 1; x < size-2; x++) {
                     //the matrix/sensor/thingy that convolves the input from a 3x3 array down to a 1x1 output value
                     /*
                     I know something's gonna come up later that shows a problem with the difference in sizing for the different layers,
                     I can feel it, so I'm leaving a debugging message here
                     */
-                    System.out.println("Maybe error here @ getL0Out method in Layer.java");
+//                    System.out.println("Maybe error here @ getL0Out method in Layer.java");
+                    //I was being stupid, the error was in the previous block, I put 0s where a 1 and a 2 should've been
+                    //I'm still leaving the message here if/when I might need it
                     //top layer of sensor thingy
                     layerOut [x][y] = layerIn [x-1][y-1] * weights.getWeight(0, 0);
                     layerOut [x][y] += layerIn [x][y-1] * weights.getWeight(1, 0);

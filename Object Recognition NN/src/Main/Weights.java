@@ -37,6 +37,7 @@ public class Weights {
     public Weights (int l) {
         layer = l;
         
+        //initialize size of weights array
         weights = new double [size][size];
     }
     public Weights (int l, String n) {
@@ -44,6 +45,7 @@ public class Weights {
         
         name = n;
         
+        //initialize size of weights array
         weights = new double [size][size];
     }
     public Weights (int l, int s) {
@@ -54,6 +56,7 @@ public class Weights {
         else
         size = MAX_SIZE;
         
+        //initialize size of weights array
         weights = new double [size][size];
     }
     public Weights (int l, String n, int s) {
@@ -66,12 +69,16 @@ public class Weights {
         else
         size = MAX_SIZE;
         
+        //initialize size of weights array
         weights = new double [size][size];
     }
     public Weights (int l, double [] [] w) {
         layer = l;
         
         size = w.length;
+        
+        //initialize size of weights array
+        weights = new double [size][size];
         
         //read all w's values into m
         for (int y = 0; y < w.length; y++) {
@@ -86,6 +93,9 @@ public class Weights {
         name = n;
         
         size = w.length;
+        
+        //initialize size of weights array
+        weights = new double [size][size];
         
         //read all w's values into m
         for (int y = 0; y < w.length; y++) {
@@ -102,14 +112,15 @@ public class Weights {
         
         size = w.size;
         
+        //initialize size of weights array
+        weights = new double [size][size];
+        
         //read all w's values into m
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
                 weights[x][y] = w.getWeight(x, y);
             }
         }
-        
-        weights = new double [size][size];
     }
     
     //getters
