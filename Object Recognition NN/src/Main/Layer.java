@@ -126,14 +126,14 @@ public class Layer {
             
             return layerOut;
         } else {
-            //if the layer being used by method is not weightsernel layer
+            //if the layer being used by method is not kernel layer
             System.out.println("This method only works on the weightsernel layer. (Layer 0)");
             return null;
         }
     }
     public double [] [] getL1Out() {
         //initialize max pool weights
-        weights = new Weights (0, 3);
+        weights = new Weights (0, 2);
         //set size of layerOut to layerIn.length-2
         double [] [] layerOut = new double [size-2][size-2];
         
@@ -144,7 +144,7 @@ public class Layer {
             }
         }
         
-        if (layer == 0) {
+        if (layer == 1) {
             //do required stuffs to input to get output
             for (int y = 1; y < size-1; y++) {
                 for (int x = 1; x < size-1; x++) {
